@@ -26,9 +26,11 @@ tenure = st.slider('Tenure', 0, 10)
 num_of_products = st.slider('Number of Products', 1, 4)
 has_cr_card = st.selectbox('Has Credit Card', [0, 1])
 is_active_member = st.selectbox('Is Active Member', [0, 1])
+is_exited = st.selectbox('Is Exited', [0, 1])
 
-input_data = pd.DataFrame({
+input_df = pd.DataFrame({
     'CreditScore': [credit_score],
+    'Geography': [geography], 
     'Gender': [label_encoder_gender.transform([gender])[0]],
     'Age': [age],
     'Tenure': [tenure],
@@ -36,16 +38,15 @@ input_data = pd.DataFrame({
     'NumOfProducts': [num_of_products],
     'HasCrCard': [has_cr_card],
     'IsActiveMember': [is_active_member],
-    'EstimatedSalary': [estimated_salary]
+    'Exited': [is_exited]
 })
 
-geo_encoded = onehot_encoder_geo.transform([[geography]]).toarray()
+geo_encoded = onehot_encoder_geo.transform(input_df[['Geography']]).toarray()
 geo_encoded_df = pd.DataFrame(geo_encoded, columns = onehot_encoder_geo.get_feature_names_out(['Geography']))
 
-input_data2 = pd.DataFrame([input_data])
-input_data2 = pd.concat([input_data2.reset_index(drop=True), geo_encoded_df], axis = 1)
+input_df = pd.concat([input_df.drop('Geography', axis = 1), geo_encoded_df], axis = 1)
 
-input_data_scaled = scaler.transform(input_data2)
+input_data_scaled = scaler.transform(input_df)
 
 prediction = model.predict(input_data_scaled)
 prediction_salary = prediction[0][0]
