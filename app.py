@@ -41,7 +41,12 @@ input_df = pd.DataFrame({
     'Exited': [is_exited]
 })
 
+input_df
+
 geo_encoded = onehot_encoder_geo.transform(input_df[['Geography']]).toarray()
+
+geo_encoded
+
 geo_encoded_df = pd.DataFrame(geo_encoded, columns = onehot_encoder_geo.get_feature_names_out(['Geography']))
 
 input_df = pd.concat([input_df.drop('Geography', axis = 1), geo_encoded_df], axis = 1)
